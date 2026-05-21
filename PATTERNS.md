@@ -26,35 +26,24 @@ Artık sistem, kodun geri kalanını bozma riski olmadan yeni bildirim türleriy
 
 ---
 
-## 📊 Önce / Sonra UML Sınıf Diyagramları
-
----
-
-### **1. ÖNCE (Başlangıç Tasarımı - Faz 0)**
-
 ```mermaid
 classDiagram
     class NotificationManager {
         +send_notification(notification_type: str, message: str, receiver: str)
     }
-classDiagram
     class Notification {
         <<interface>>
         +send(message: str, receiver: str)*
     }
-
     class EmailNotification {
         +send(message: str, receiver: str)
     }
-
     class SMSNotification {
         +send(message: str, receiver: str)
     }
-
     class PushNotification {
         +send(message: str, receiver: str)
     }
-
     class NotificationFactory {
         +create_notification(notification_type: str) Notification
     }
@@ -63,4 +52,5 @@ classDiagram
     Notification <|.. SMSNotification : Implements
     Notification <|.. PushNotification : Implements
     NotificationFactory ..> Notification : Creates
+    NotificationManager ..> NotificationFactory : Uses
 ```
