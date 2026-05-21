@@ -1,35 +1,30 @@
-from abc import ABC, abstracthmethod
-class Notification(ABC):
-  @abstractmethod
-  def send(self,message,receiver):
-    pass
-class EmailNotification(Notification):
-  def send(self,message,receiver):
-    printf(f"E-posta sunucusuna bağlanılıyor")
-    printf(f"Alici:{receiver}|Mesaj:{message}")
-class SMSNotifivation(Notification):
-  def send(self,message,receiver):
-     print(f"SMS Gateway bağlantısı kuruluyor...")
-        print(f"Telefon: {receiver} | Mesaj: {message}")
 
-class PushNotification(Notification):
-    def send(self, message, receiver):
-        print(f"Mobil cihaz ID'si doğrulanıyor...")
-        print(f"Push İçeriği: {message}")
+class ExternalSMSService:
+    def dispatch_text(self, phone_number: str, text_content: str):
+        print(f"[Harici API] {phone_number} numarasına SMS gönderildi: {text_content}")
 
-class NotificationFactory:
-    @staticmethod
-    def create_notification(notification_type):
-        if notification_type == "email":
-            return EmailNotification()
-        elif notification_type == "sms":
-            return SMSNotification()
-        elif notification_type == "push":
-            return PushNotification()
-        raise ValueError(f"Geçersiz bildirim tipi: {notification_type}")
+class SMSAdapter:
+    def __init__(self, external_service: ExternalSMSService):
+        self.external_service = external_service
 
-if __name__ == "__main__":
-    factory = NotificationFactory()
-    notifier = factory.create_notification("email")
-    notifier.send("Merhaba, bu bir Factory Method örneğidir!", "beyza@example.com")
-  
+    def send(self, message: str, receiver: str):
+      
+        self.external_service.dispatch_text(phone_number=receiver, text_content=message)
+
+
+class NotificationDecorator:
+    def __init__(self, decorated_notification):
+        self._decorated_notification = decorated_notification
+
+    def send(self, message: str, receiver: str):
+        self._decorated_notification.send(message, receiver)
+
+class EncryptedNotificationDecorator(NotificationDecorator):
+    def send(self, message: str, receiver: str):
+        encrypted_message = f"🔒[ŞİFRELENDİ] {message}"
+        super().send(encrypted_message, receiver)
+
+class LoggingNotificationDecorator(NotificationDecorator):
+    def send(self, message: str, receiver: str):
+        print(f"📝 [LOG]: {receiver} adresine bildirim tetiklendi.")
+        super().send(message, receiver)
