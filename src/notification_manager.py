@@ -1,30 +1,46 @@
+# FAZ 3: BEHAVIORAL  ÖRÜNTÜLER
 
-class ExternalSMSService:
-    def dispatch_text(self, phone_number: str, text_content: str):
-        print(f"[Harici API] {phone_number} numarasına SMS gönderildi: {text_content}")
+class KullaniciGozlemci:
+    def __init__(self, isim: str):
+        self.isim = isim
 
-class SMSAdapter:
-    def __init__(self, external_service: ExternalSMSService):
-        self.external_service = external_service
+    def guncelleme_al(self, mesaj: str):
+        print(f" [Kullanıcı Bildirimi] {self.isim} kişisine mesaj ulaştı: {mesaj}")
 
-    def send(self, message: str, receiver: str):
-      
-        self.external_service.dispatch_text(phone_number=receiver, text_content=message)
+class BildirimMerkezi:
+    def __init__(self):
+        self._aboneler = []
+
+    def abone_ekle(self, abone: KullaniciGozlemci):
+        if abone not in self._aboneler:
+            self._aboneler.append(abone)
+
+    def abone_cikar(self, abone: KullaniciGozlemci):
+        self._aboneler.remove(abone)
+
+    def herkese_duyur(self, mesaj: str):
+        for abone in self._aboneler:
+            abone.guncelleme_al(mesaj)
 
 
-class NotificationDecorator:
-    def __init__(self, decorated_notification):
-        self._decorated_notification = decorated_notification
+class GonderimStratejisi:
+    def gonder(self, mesaj: str):
+        pass
 
-    def send(self, message: str, receiver: str):
-        self._decorated_notification.send(message, receiver)
+class AcilGonderimStratejisi(GonderimStratejisi):
+    def gonder(self, mesaj: str):
+        print(f" [ACİL STRATEJİ] En yüksek öncelikli hat kullanılarak hemen gönderildi: {mesaj}")
 
-class EncryptedNotificationDecorator(NotificationDecorator):
-    def send(self, message: str, receiver: str):
-        encrypted_message = f"🔒[ŞİFRELENDİ] {message}"
-        super().send(encrypted_message, receiver)
+class EkonomikGonderimStratejisi(GonderimStratejisi):
+    def gonder(self, mesaj: str):
+        print(f" [EKONOMİK STRATEJİ] Sunucu yoğunluğu beklenerek toplu şekilde gönderildi: {mesaj}")
 
-class LoggingNotificationDecorator(NotificationDecorator):
-    def send(self, message: str, receiver: str):
-        print(f"📝 [LOG]: {receiver} adresine bildirim tetiklendi.")
-        super().send(message, receiver)
+class BildirimGondericiContext:
+    def __init__(self, strateji: GonderimStratejisi):
+        self._strateji = strateji
+
+    def strateji_degistir(self, yeni_strateji: GonderimStratejisi):
+        self._strateji = yeni_strateji
+
+    def islemi_tetikle(self, mesaj: str):
+        self._strateji.gonder(mesaj)
