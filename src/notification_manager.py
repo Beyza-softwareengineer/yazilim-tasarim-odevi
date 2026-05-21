@@ -1,35 +1,46 @@
-from abc import ABC, abstracthmethod
-class Notification(ABC):
-  @abstractmethod
-  def send(self,message,receiver):
-    pass
-class EmailNotification(Notification):
-  def send(self,message,receiver):
-    printf(f"E-posta sunucusuna bağlanılıyor")
-    printf(f"Alici:{receiver}|Mesaj:{message}")
-class SMSNotifivation(Notification):
-  def send(self,message,receiver):
-     print(f"SMS Gateway bağlantısı kuruluyor...")
-        print(f"Telefon: {receiver} | Mesaj: {message}")
+# FAZ 3: BEHAVIORAL  ÖRÜNTÜLER
 
-class PushNotification(Notification):
-    def send(self, message, receiver):
-        print(f"Mobil cihaz ID'si doğrulanıyor...")
-        print(f"Push İçeriği: {message}")
+class KullaniciGozlemci:
+    def __init__(self, isim: str):
+        self.isim = isim
 
-class NotificationFactory:
-    @staticmethod
-    def create_notification(notification_type):
-        if notification_type == "email":
-            return EmailNotification()
-        elif notification_type == "sms":
-            return SMSNotification()
-        elif notification_type == "push":
-            return PushNotification()
-        raise ValueError(f"Geçersiz bildirim tipi: {notification_type}")
+    def guncelleme_al(self, mesaj: str):
+        print(f" [Kullanıcı Bildirimi] {self.isim} kişisine mesaj ulaştı: {mesaj}")
 
-if __name__ == "__main__":
-    factory = NotificationFactory()
-    notifier = factory.create_notification("email")
-    notifier.send("Merhaba, bu bir Factory Method örneğidir!", "beyza@example.com")
-  
+class BildirimMerkezi:
+    def __init__(self):
+        self._aboneler = []
+
+    def abone_ekle(self, abone: KullaniciGozlemci):
+        if abone not in self._aboneler:
+            self._aboneler.append(abone)
+
+    def abone_cikar(self, abone: KullaniciGozlemci):
+        self._aboneler.remove(abone)
+
+    def herkese_duyur(self, mesaj: str):
+        for abone in self._aboneler:
+            abone.guncelleme_al(mesaj)
+
+
+class GonderimStratejisi:
+    def gonder(self, mesaj: str):
+        pass
+
+class AcilGonderimStratejisi(GonderimStratejisi):
+    def gonder(self, mesaj: str):
+        print(f" [ACİL STRATEJİ] En yüksek öncelikli hat kullanılarak hemen gönderildi: {mesaj}")
+
+class EkonomikGonderimStratejisi(GonderimStratejisi):
+    def gonder(self, mesaj: str):
+        print(f" [EKONOMİK STRATEJİ] Sunucu yoğunluğu beklenerek toplu şekilde gönderildi: {mesaj}")
+
+class BildirimGondericiContext:
+    def __init__(self, strateji: GonderimStratejisi):
+        self._strateji = strateji
+
+    def strateji_degistir(self, yeni_strateji: GonderimStratejisi):
+        self._strateji = yeni_strateji
+
+    def islemi_tetikle(self, mesaj: str):
+        self._strateji.gonder(mesaj)
