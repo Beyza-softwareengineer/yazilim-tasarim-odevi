@@ -1,0 +1,25 @@
+name: Python Proje Kontrolü (CI)
+
+on:
+  push:
+    branches: [ main, phase-1, phase-2, phase-3 ]
+  pull_request:
+    branches: [ main, phase-1, phase-2, phase-3 ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Depoyu Klonla (Checkout)
+      uses: actions/checkout@v4
+
+    - name: Python Kurulumu
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Kod Sözdizimi Kontrolü (Syntax Check)
+      run: |
+        # Kodda herhangi bir syntax (yazım) hatası var mı diye Python'a derleme testi yaptırıyoruz
+        python -m compileall src/
