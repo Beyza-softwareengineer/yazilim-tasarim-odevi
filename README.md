@@ -41,7 +41,11 @@ Her faz için UML sınıf diyagramları:
 - [Faz 3 Diyagramı — Observer & Strategy](docs/diagrams/phase3_behavioral.md)
 
 ---
+### Çalıştırma
 
+```bash
+python src/notification_manager.py
+```
 
 ## Proje Yapısı
 
