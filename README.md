@@ -1,27 +1,60 @@
-# yazilim-tasarim-odevi
+# Tasarım Örüntüleri Ödevi — A) Bildirim Sistemi
 
-# Tasarım Örüntüleri Ödevi - A) Bildirim Sistemi
+**Konu Seçimi: A — Bildirim Sistemi**
+Bu konuyu seçmemin sebebi: tüm bildirim tiplerinin tek bir sınıfta
+if-else zincirleriyle yönetilmesi, gerçek projelerde sık karşılaşılan
+ve Creational + Structural + Behavioral örüntülerin üçünü de doğal
+olarak tetikleyen bir senaryo sunuyor. 
 
-Hocam , bu projede başlangıçta spagetti halde olan bir bildirim sistemini (Faz 0), her aşamada farklı tasarım örüntüleri uygulayarak adım adım daha esnek ve profesyonel bir mimariye dönüştürdüm. 
+---
+
+## Projenin Ne Yaptığı
+
+Başlangıçta spagetti halde olan bir bildirim sistemini (Faz 0),
+her aşamada farklı tasarım örüntüleri uygulayarak adım adım daha
+esnek ve profesyonel bir mimariye dönüştürdüm.
+
+Sistem; e-posta, SMS ve push bildirimi gönderebiliyor. Üçüncü parti
+servislerle uyumlu çalışabiliyor, mesajlara şifreleme ve loglama
+eklenebiliyor, toplu veya acil gönderim stratejisi seçilebiliyor.
+
+---
+
+## Kullanılan Tasarım Örüntüleri
+
+| Faz | Örüntü | Kategori | Kısa Açıklama |
+|-----|--------|----------|---------------|
+| Faz 1 | Factory Method | Creational | Nesne üretim sorumluluğunu fabrika sınıfına devreder; istemci kod somut sınıfları tanımaz |
+| Faz 2 | Adapter | Structural | Uyumsuz üçüncü parti arayüzleri mevcut sisteme bağlar |
+| Faz 2 | Decorator | Structural | Runtime'da nesnelere şifreleme/loglama gibi özellikler ekler |
+| Faz 3 | Observer | Behavioral | Abone kullanıcılar merkez tetiklenince otomatik bildirim alır |
+| Faz 3 | Strategy | Behavioral | Acil veya ekonomik gönderim algoritması runtime'da seçilir |
+
+---
+
+## Mimari Diyagramlar
+
+Her faz için UML sınıf diyagramları:
+
+- [Faz 1 Diyagramı — Factory Method](docs/diagrams/phase1_factory.md)
+- [Faz 2 Diyagramı — Adapter & Decorator](docs/diagrams/phase2_structural.md)
+- [Faz 3 Diyagramı — Observer & Strategy](docs/diagrams/phase3_behavioral.md)
+
+---
 
 
-## Projede Kullandığım Örüntüler ve Mantıkları
+## Proje Yapısı
 
-### 1. Faz 1: Creational  Örüntü
-* **Factory Method :** Projenin en başında `NotificationManager` içinde e-posta veya SMS nesnelerini doğrudan `if-else` bloklarıyla üretiyordum. Bu bağımlılığı ortadan kaldırmak için nesne üretim işini tamamen `NotificationFactory` sınıfına devrettim. Böylece istemci kod somut sınıflara bağımlı olmaktan kurtuldu.
-
-### 2. Faz 2: Structural Örüntüler
-* **Adapter Pattern :** Sisteme sonradan eklediğim üçüncü parti harici servislerin metot isimleri (örneğin `dispatch_text`), bizim projedeki standart `send()` metoduyla uyuşmuyordu. Mevcut çalışan kodları hiç kurcalamadan bu harici yapıları sisteme bağlamak için araya bir `SMSAdapter` yazdım.
-* **Decorator Pattern :** Gönderilen mesajları şifrelemek veya loglamak gibi ekstra işler gerekti. Bunları sınıfların içine gömmek ya da her kombinasyon için yeni alt sınıflar açıp kod patlaması yaşamak yerine Decorator kullandım. Bu sayede çalışma zamanında (runtime) istediğim bildirime istediğim özelliği bir kılıf gibi giydirebiliyorum.
-
-### 3. Faz 3: Behavioral  Örüntüler
-* **Observer Pattern :** Sisteme kayıtlı kullanıcıların tek bir merkezden (`BildirimMerkezi`) tetiklenen toplu duyuruları ve kampanyaları otomatik olarak alabilmesini sağladım. Yeni bir kullanıcı sisteme dahil olduğunda merkezdeki kodları hiç değiştirmemiz gerekmiyor.
-* **Strategy Pattern :** Bildirimlerin gönderim moduna göre (Acil/Hızlı veya Ekonomik/Toplu) farklı algoritmalarla çalıştırılabilmesini sağladım. İleride yeni bir gönderim stratejisi eklemek istersek mevcut kodlara dokunmadan sadece yeni bir strateji sınıfı açmamız yetecek.
-
-## Mimari Diyagram Linkleri
-
-Her faz için hazırladığım UML sınıf diyagramlarına (Mermaid kodlarına) aşağıdaki klasör yollarından grafiksel olarak bakabilirsiniz:
-* [Faz 1 Diyagramı (Factory Method)](docs/diagrams/phase1_factory.md)
-* [Faz 2 Diyagramı (Adapter & Decorator)](docs/diagrams/phase2_structural.md)
-* [Faz 3 Diyagramı (Observer & Strategy)](docs/diagrams/phase3_behavioral.md)
-
+```
+├── README.md
+├── PATTERNS.md
+├── PROBLEMS.md
+├── src/
+├── docs/
+│   ├── diagrams/
+│   └── ai-log/
+│       ├── phase1.md
+│       ├── phase2.md
+│       └── phase3.md
+└── .github/workflows/ci.yml
+```
