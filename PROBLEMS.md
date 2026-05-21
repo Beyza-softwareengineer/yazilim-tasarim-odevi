@@ -30,7 +30,7 @@ AI şunları tespit etti:
 
 ## 🔄 Karşılaştırma: Ben vs. AI
 
-| Sorun | Ben Gördüm mü? | AI Gördü mü? |
+| Sorun | Ben Gördüm mü? | AI Gördü mü? |  
 | if-else zincirleri / OCP ihlali | ✅ Evet | ✅ Evet |
 | Sıkı Bağlılık | ✅ Evet | ✅ Evet |
 | SRP ihlali (tek sınıf çok sorumluluk) | ✅ Evet | ✅ Evet |
